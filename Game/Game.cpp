@@ -54,6 +54,6 @@ int main()
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-
+    // Testing edits
     return 0;
 }
