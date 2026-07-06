@@ -8,6 +8,7 @@ namespace nu {
 		void Quit();
 		bool Initialize(const char* name, int width, int height);
 		void SetColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha = 255);
+		void SetColorFloat(float red, float green, float blue, float alpha = 1.0f);
 		void Clear();
 		void RenderPresent();
 		void RenderPoint(float x, float y);
