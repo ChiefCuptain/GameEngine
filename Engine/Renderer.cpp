@@ -28,32 +28,35 @@ namespace nu
             SDL_Quit();
             return false;
         }
+
+        SDL_SetRenderVSync(m_renderer, 1);
+
         return true;
     }
-    void Renderer::SetColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
+    void Renderer::SetColor(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha) const
     {
         SDL_SetRenderDrawColor(m_renderer, red, green, blue, alpha);
     }
-    void Renderer::SetColorFloat(float red, float green, float blue, float alpha)
+    void Renderer::SetColorFloat(float red, float green, float blue, float alpha) const
     {
         SDL_SetRenderDrawColorFloat(m_renderer, red, green, blue, alpha);
     }
     void Renderer::Clear() {
         SDL_RenderClear(m_renderer);
     }
-    void Renderer::RenderPresent()
-    {
+    void Renderer::RenderPresent() const
+    { 
         SDL_RenderPresent(m_renderer);
     }
-    void Renderer::RenderPoint(float x, float y)
+    void Renderer::RenderPoint(float x, float y) const
     {
         SDL_RenderPoint(m_renderer, x, y);
     }
-    void Renderer::RenderLine(float x1, float y1, float x2, float y2)
+    void Renderer::RenderLine(float x1, float y1, float x2, float y2) const
     {
         SDL_RenderLine(m_renderer, x1, y1, x2, y2);
     }
-    void Renderer::RenderRect(float x, float y, float width, float height, bool fill = true)
+    void Renderer::RenderRect(float x, float y, float width, float height, bool fill = true) const
     {
         SDL_FRect rect{ x, y, width, height };
         (fill) ? SDL_RenderFillRect(m_renderer, &rect) : SDL_RenderRect(m_renderer, &rect);
