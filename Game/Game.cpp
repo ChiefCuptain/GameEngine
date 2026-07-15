@@ -1,46 +1,5 @@
 #include "Engine.h"
-
-struct Transform
-{
-    nu::Vector2 position;
-    float rotation;
-    float scale;
-};
-
-class Actor
-{
-public:
-    Actor(const Transform& transform) : m_transform{ transform } {}
-
-    void Update(float dt)
-    {
-        m_transform.position += (m_velocity * dt);
-
-        m_transform.position.x = nu::math::Clamp(0.0f, 1920.0f, m_transform.position.x);
-        m_transform.position.y = nu::math::Clamp(0.0f, 1080.0f, m_transform.position.y);
-    }
-
-    void Draw(const nu::Renderer& r) const
-    {
-        r.SetColor(255, 255, 127);
-        r.RenderRect(m_transform.position.x - (m_transform.scale * 0.5f), m_transform.position.y - (m_transform.scale * 0.5f), m_transform.scale, m_transform.scale, true);
-    }
-
-    const Transform& GetTransform() const { return m_transform; }
-
-    void SetPosition(const nu::Vector2& position) { m_transform.position = position; }
-
-    void SetRotation(float rotation) { m_transform.rotation = rotation; }
-
-    void SetScale(float scale) { m_transform.scale = scale; }
-
-    nu::Vector2 GetVelocity() const { return m_velocity; }
-    void SetVelocity(const nu::Vector2& velocity) { m_velocity = velocity; }
-
-protected:
-    Transform m_transform;
-    nu::Vector2 m_velocity{ 0.0f, 0.0f };
-};
+#include <vector>
 
 int main()
 {
@@ -51,7 +10,9 @@ int main()
     nu::Input input;
     input.Initialize();
     nu::GameTime time;
-    Actor player{ Transform{nu::Vector2{960.0f, 540.0f}, 0.0f, 50.0f} };
+    std::vector<nu::Vector2> pointz{ nu::Vector2{-3, 3}, nu::Vector2{3, 3}, nu::Vector2{0,0} };
+    nu::Mesh mesh{pointz, nu::Color{1.0f, 0.57f, 1.0f} };
+    nu::Actor player{ nu::Transform{nu::Vector2{960.0f, 540.0f}, 0.0f, 50.0f}, nu::Model{{mesh}} };
     nu::Vector2 position{ 960,540 };
 
     std::vector<nu::Vector2> points;

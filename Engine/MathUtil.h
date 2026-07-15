@@ -1,6 +1,6 @@
 #pragma once
 
-namespace nu::math
+namespace nu
 {
 	constexpr float Pi = 3.141592f;
 	constexpr float TwoPi = Pi * 2;
