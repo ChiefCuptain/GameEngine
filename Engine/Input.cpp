@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Input.h"
 #include <SDL3/SDL.h>
+#include "Engine.h"
 
 namespace nu
 {

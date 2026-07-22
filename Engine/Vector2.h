@@ -1,4 +1,6 @@
 #pragma once
+#include "MathUtil.h"
+
 #include <cmath>
 #include <cassert>
 
@@ -42,9 +44,12 @@ namespace nu
 		float Length() const { return std::sqrt(LengthSqr()); }
 		Vector2 Normalized() const { return (*this) / Length(); }
 		float Dot(const Vector2& v) const { return (this->x * v.x) + (this->y * v.y); }
+
+		Vector2 DirectionTo(const Vector2& v)  const { return (*this - v).Normalized() * -1; }
+		float AngleTo(const Vector2& v)         const { return -DirectionTo(v).Angle() - HalfPi; }
 		float Angle() const { return std::atan2(this->y, this->x); }
 		float AngleBetween(const Vector2& v) const { return std::acos(Dot(v)); }
-		Vector2 Rotate(float radians)
+		Vector2 Rotate(float radians) const
 		{
 			Vector2 v;
 

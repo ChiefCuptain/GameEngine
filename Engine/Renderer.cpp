@@ -4,6 +4,7 @@
 #include "Model.h"
 
 #include <iostream>
+#include "MathUtil.h"
 
 namespace nu
 {
@@ -89,6 +90,9 @@ namespace nu
 
                 v1 *= transform.scale;
                 v2 *= transform.scale;
+
+                v1 = v1.Rotate(transform.rotation * DegToRad);
+                v2 = v2.Rotate(transform.rotation * DegToRad);
 
                 v1 += transform.position;
                 v2 += transform.position;

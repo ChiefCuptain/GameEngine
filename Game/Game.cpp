@@ -1,24 +1,77 @@
 #include "Engine.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "Assets.h"
 #include <vector>
 
 int main()
 {
     // INITIALIZATION
-    nu::Renderer r;
-    r.Initialize("Game Engine", 1920, 1080);
+    nu::Engine::Get().Initialize();
 
-    nu::Input input;
-    input.Initialize();
-    nu::GameTime time;
-    std::vector<nu::Vector2> pointz{ nu::Vector2{-3, 3}, nu::Vector2{3, 3}, nu::Vector2{0,0} };
-    nu::Mesh mesh{pointz, nu::Color{1.0f, 0.57f, 1.0f} };
-    nu::Actor player{ nu::Transform{nu::Vector2{960.0f, 540.0f}, 0.0f, 50.0f}, nu::Model{{mesh}} };
+    // create audio system
+    FMOD::System* audio;
+    FMOD::System_Create(&audio);
+
+    void* extradriverdata = nullptr;
+    audio->init(32, FMOD_INIT_NORMAL, extradriverdata);
+
+    std::vector<FMOD::Sound*> sounds;
+
+    FMOD::Sound* sound = nullptr;
+
+    audio->createSound("snd_jump.wav", FMOD_DEFAULT, 0, &sound);
+    sounds.push_back(sound);
+
+    audio->createSound("snd_timer_tick.wav", FMOD_DEFAULT, 0, &sound);
+    sounds.push_back(sound);
+
+    audio->createSound("snd_timer_pickup.wav", FMOD_DEFAULT, 0, &sound);
+    sounds.push_back(sound);
+
+    audio->createSound("snd_portal_enter.wav", FMOD_DEFAULT, 0, &sound);
+    sounds.push_back(sound);
+
+    audio->createSound("snd_evil_heliblo.wav", FMOD_DEFAULT, 0, &sound);
+    sounds.push_back(sound);
+
+    // Mesh / Model
+
+    nu::Scene scene;
+
+    PlayerDesc playerDesc;
+    playerDesc.name = "Player";
+    playerDesc.model = assets::playerModel;
+    playerDesc.velocity = nu::Vector2{ 0.0f };
+    playerDesc.transform = nu::Transform{ nu::Vector2{960.0f, 540.0f}, 0.0f, 25.0f };
+    playerDesc.speed = 175.0f;
+
+    Player* player = new Player{playerDesc};
+    scene.AddActor(player);
+
+    EnemyDesc enemyDesc;
+    enemyDesc.name = "Enemy";
+    enemyDesc.model = assets::playerModel;
+    enemyDesc.velocity = nu::Vector2{ 0.0f };
+    enemyDesc.speed = 125.0f;
+
+    for (int i = 0; i < 10; ++i)
+    {
+        enemyDesc.transform = nu::Transform{ nu::Vector2{nu::RandomFloat((float)nu::Engine::Get().GetRenderer().GetWindowWidth()), nu::RandomFloat((float)nu::Engine::Get().GetRenderer().GetWindowHeight())}, 0.0f, 12.0f };
+        Enemy* enemy = new Enemy{ enemyDesc };
+        scene.AddActor(enemy);
+    }
+    
+
     nu::Vector2 position{ 960,540 };
 
     std::vector<nu::Vector2> points;
 
     // MAIN LOOP
     bool quit = false;
+
+
+
     while (!quit) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -31,99 +84,96 @@ int main()
             }
         }
 
-        input.Update();
-        time.Tick();
+        nu::Engine::Get().Update();
+        audio->update();
 
-        if (input.GetMouseDown(nu::Input::Left))
+        float dt = nu::Engine::Get().GetTime().GetDeltaTime();
+
+        scene.Update(dt);
+
+        if (nu::Engine::Get().GetInput().GetMouseDown(nu::Input::Left))
         {
 
             if (points.empty())
             {
-                points.push_back(input.GetMousePosition());
+                points.push_back(nu::Engine::Get().GetInput().GetMousePosition());
             }
             else
             {
-                nu::Vector2 v = points.back() - input.GetMousePosition();
+                nu::Vector2 v = points.back() - nu::Engine::Get().GetInput().GetMousePosition();
 
                 if (v.Length() > 10.0f)
                 {
-                    points.push_back(input.GetMousePosition());
+                    points.push_back(nu::Engine::Get().GetInput().GetMousePosition());
                 }
             }
             
         }
 
-        if (input.GetMousePressed(nu::Input::Right))
+        if (nu::Engine::Get().GetInput().GetMousePressed(nu::Input::Right))
         {
             if (!points.empty()) { points.pop_back(); }
         }
 
-        //if (input.GetKeyPressed(SDL_SCANCODE_Q)) std::cout << "Q pressed\n";
-        //if (input.GetKeyDown(SDL_SCANCODE_Q)) std::cout << "Q held\n";
-        //if (input.GetKeyReleased(SDL_SCANCODE_Q)) std::cout << "Q released\n";
-        //if (input.GetMousePressed(nu::Input::Left)) std::cout << "Left mouse pressed\n";
-        //if (input.GetMouseDown(nu::Input::Left)) std::cout << "Left mouse held\n";
-        //if (input.GetMouseReleased(nu::Input::Left)) std::cout << "Left mouse released\n";
-
         nu::Vector2 mousePosition;
-        nu::Vector2 vel{ 0.0f, 0.0f };
-        float cursorSpeed = 175.0f;
-
+        
         SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 
-        if (input.GetMousePressed(nu::Input::Left))
+        if (nu::Engine::Get().GetInput().GetMousePressed(nu::Input::Left))
         {
-            points.push_back(input.GetMousePosition());
+            points.push_back(nu::Engine::Get().GetInput().GetMousePosition());
         }
 
-        nu::Vector2 force{ 0, 0 };
-
-        if (input.GetKeyDown(SDL_SCANCODE_W)) force.y = -cursorSpeed;
-        if (input.GetKeyDown(SDL_SCANCODE_S)) force.y = cursorSpeed;
-        if (input.GetKeyDown(SDL_SCANCODE_A)) force.x = -cursorSpeed;
-        if (input.GetKeyDown(SDL_SCANCODE_D)) force.x = cursorSpeed;
-        if (input.GetKeyDown(SDL_SCANCODE_LSHIFT)) force *= 2.0f;
-
-        player.SetVelocity(player.GetVelocity() + force * time.GetDeltaTime());
-        player.Update(time.GetDeltaTime());
+        if (nu::Engine::Get().GetInput().GetKeyPressed(SDL_SCANCODE_1))
+        {
+            audio->playSound(sounds.at(0), nullptr, false, nullptr);
+        }
+        if (nu::Engine::Get().GetInput().GetKeyPressed(SDL_SCANCODE_2))
+        {
+            audio->playSound(sounds.at(1), nullptr, false, nullptr);
+        }
+        if (nu::Engine::Get().GetInput().GetKeyPressed(SDL_SCANCODE_3))
+        {
+            audio->playSound(sounds.at(2), nullptr, false, nullptr);
+        }
+        if (nu::Engine::Get().GetInput().GetKeyPressed(SDL_SCANCODE_4))
+        {
+            audio->playSound(sounds.at(3), nullptr, false, nullptr);
+        }
+        if (nu::Engine::Get().GetInput().GetKeyPressed(SDL_SCANCODE_5))
+        {
+            audio->playSound(sounds.at(4), nullptr, false, nullptr);
+        }
+        
 
      /*   vel += (force * time.GetDeltaTime());
         */
 
 
         // RENDER
-        r.SetColor(0,0,0); // Set render draw color to black
-        r.Clear(); // Clear the renderer
+        nu::Engine::Get().GetRenderer().SetColor(0, 0, 0); // Set render draw color to black
+        nu::Engine::Get().GetRenderer().Clear(); // Clear the renderer
 
-        r.SetColor(255, 255, 255);
-        for (size_t i = 0; i < points.size(); i++) // Render 300 points
-        {
-            if (i == 0)
-            {
-                continue;
-            }
-            else
-            {
-                r.RenderLine(points.at(i - 1).x, points.at(i - 1).y, points.at(i).x, points.at(i).y);
-            }
-        }
-
-        player.Draw(r);
-
-        //for (int i = 0; i < 5; i++) // Render 5 rectangles
+        //nu::Engine::Get().GetRenderer().SetColor(255, 255, 255);
+        //for (size_t i = 0; i < points.size(); i++) // Render 300 points
         //{
-        //    r.SetColorFloat(nu::RandomFloat(), nu::RandomFloat(), nu::RandomFloat()); // Set render draw color to green
-        //    r.RenderRect(nu::RandomFloat(1920), nu::RandomFloat(1080), nu::RandomFloat(300), nu::RandomFloat(300), nu::RandomInt(2));
+        //    if (i == 0)
+        //    {
+        //        continue;
+        //    }
+        //    else
+        //    {
+        //        nu::Engine::Get().GetRenderer().RenderLine(points.at(i - 1).x, points.at(i - 1).y, points.at(i).x, points.at(i).y);
+        //    }
         //}
 
+        scene.Draw(nu::Engine::Get().GetRenderer());
 
-        //r.SetColor(255,255,255); // Set render draw color to green
-        //SDL_RenderDebugText(renderer, 10, 10, "Hello world!");
-        r.RenderPresent();// Render the screen
+        nu::Engine::Get().GetRenderer().RenderPresent();// Render the screen
     }
 
     // SHUTDOWN
-    r.Quit();
+    nu::Engine::Get().Quit();
 
     // Testing edits
     return 0;
