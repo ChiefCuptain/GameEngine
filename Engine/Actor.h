@@ -11,7 +11,8 @@ namespace nu
         std::string name;
         std::string tag;
         Transform transform;
-        Vector2 velocity;
+        Vector2 velocity{ 0.0f };
+        float lifespan = -1.0f;
         Model model;
     };
 
@@ -20,11 +21,12 @@ namespace nu
     public:
         Actor() = default;
         Actor(const ActorDesc& actorDesc) :
-            m_name{ actorDesc.name},
-            m_tag{ actorDesc.tag},
-            m_transform{ actorDesc.transform},
-            m_velocity{ actorDesc.velocity},
-            m_model{ actorDesc.model}
+            m_name{ actorDesc.name },
+            m_tag{ actorDesc.tag },
+            m_transform{ actorDesc.transform },
+            m_velocity{ actorDesc.velocity },
+            m_lifespan{ actorDesc.lifespan },
+            m_model{ actorDesc.model }
         { }
 
         Actor(const Transform& transform) : m_transform{ transform } {}
@@ -33,6 +35,8 @@ namespace nu
         virtual void Update(float dt);
 
         virtual void Draw(const class Renderer& r) const;
+
+        virtual void OnCollision(Actor* other) {}
 
         const Transform& GetTransform() const { return m_transform; }
 
@@ -50,6 +54,12 @@ namespace nu
         const std::string& GetTag() const { return m_tag; }
         const Scene* GetScene() { return m_scene; }
 
+        void SetDestroyed(bool destroy = true) { m_destroyed = destroy; }
+        bool GetDestroyed() const { return m_destroyed; }
+
+
+        float GetRadius() const;
+
         friend Scene;
 
     protected:
@@ -58,6 +68,9 @@ namespace nu
 
         Transform m_transform;
         Vector2 m_velocity{ 0.0f, 0.0f };
+
+        float m_lifespan = -1.0f;
+        bool m_destroyed = false;
 
         Model m_model;
 

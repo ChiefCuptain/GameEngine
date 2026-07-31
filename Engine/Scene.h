@@ -8,6 +8,7 @@ namespace nu
 	class Scene
 	{
 	public:
+		Scene() = default;
 		void AddActor(Actor* actor);
 
 		void Update(float dt);
@@ -15,8 +16,18 @@ namespace nu
 
 		template<typename T>
 		T* GetActorByName(const std::string& name);
+
+		int GetActorCountByTag(const std::string& tag) const;
+
+		void ClearActors() { m_pending_clear = true; }
+
 	private:
+		void UpdateCollisions();
+
+	private:
+		bool m_pending_clear = false;
 		std::vector<Actor*> m_actors;
+		std::vector<Actor*> m_pending_actors;
 	};
 
 	template<typename T>

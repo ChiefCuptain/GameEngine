@@ -7,9 +7,13 @@
 
 
 #include <cmath>
+#include "Bullet.h"
+#include "Assets.h"
 
 void Enemy::Update(float dt)
 {
+    m_fire_timer += dt;
+
     Player* player = m_scene->GetActorByName<Player>("Player");
     if (player)
     {
@@ -22,11 +26,27 @@ void Enemy::Update(float dt)
 
         if ((m_velocity.x > 0 && GetTransform().position.x > player->GetTransform().position.x) || (m_velocity.x < 0 && GetTransform().position.x < player->GetTransform().position.x))
         {
-            m_velocity.x *= m_brake_multiplier;
+            m_velocity.x *= (1.0f / (1.0f + m_brake_speed * dt));
         }
         if ((m_velocity.y > 0 && GetTransform().position.y > player->GetTransform().position.y) || (m_velocity.y < 0 && GetTransform().position.y < player->GetTransform().position.y))
         {
-            m_velocity.y *= m_brake_multiplier;
+            m_velocity.y *= (1.0f / (1.0f + m_brake_speed * dt));
+        }
+
+        if (m_fire_timer > m_fire_cooldown)
+        {
+            m_fire_timer = 0.0f;
+            BulletDesc bulletDesc;
+            bulletDesc.name = "Bullet";
+            bulletDesc.tag = "Enemy_Bullet";
+            bulletDesc.model = assets::bulletModel;
+            bulletDesc.transform = m_transform;
+            bulletDesc.transform.scale = 7.0f;
+            bulletDesc.lifespan = 1.5f;
+            bulletDesc.speed = 400.0f;
+
+            Bullet* bullet = new Bullet{ bulletDesc };
+            m_scene->AddActor(bullet);
         }
 
     }
@@ -55,7 +75,12 @@ void Enemy::Update(float dt)
     Actor::Update(dt);
 }
 
-void Enemy::Draw(const nu::Renderer& r) const
+void Enemy::OnCollision(Actor* other)
 {
-    Actor::Draw(r);
+    if (other->GetTag() == "Player_Bullet")
+    {
+        SetDestroyed();
+        other->SetDestroyed();
+    }
 }
+

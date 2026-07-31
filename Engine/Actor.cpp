@@ -8,6 +8,14 @@ namespace nu {
 
     void Actor::Update(float dt)
     {
+        // Lifespawn
+
+        if (m_lifespan != -1.0f)
+        {
+            m_lifespan -= dt;
+            m_destroyed = (m_lifespan <= 0.0f);
+        }
+
         m_transform.position += (m_velocity * dt);
 
         m_transform.position.x = Clamp(0.0f, 1920.0f, m_transform.position.x);
@@ -24,5 +32,10 @@ namespace nu {
             , m_transform.scale
             , m_transform.scale
             , true);*/
+    }
+
+    float Actor::GetRadius() const
+    {
+        return m_model.GetRadius() * m_transform.scale * 0.9f;
     }
 }

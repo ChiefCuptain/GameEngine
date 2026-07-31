@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include "Vector2.h"
 namespace nu {
 	class Renderer
@@ -23,6 +24,8 @@ namespace nu {
 
 		float GetWindowWidth() const { return m_screen_size.x; }
 		float GetWindowHeight() const { return m_screen_size.y; }
+
+		friend class Text;
 
 	private:
 		SDL_Window* m_window = nullptr;

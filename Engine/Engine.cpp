@@ -12,6 +12,7 @@ namespace nu
 	bool Engine::Initialize()
 	{
 		m_renderer.Initialize("Game Engine", 1920, 1080);
+		m_particle_system.Initialize();
 		m_input.Initialize();
 
 		return true;
@@ -20,12 +21,14 @@ namespace nu
 	void Engine::Quit()
 	{
 		m_input.Quit();
+		m_particle_system.Quit();
 		m_renderer.Quit();
 	}
 
 	void Engine::Update()
 	{
-		m_input.Update();
 		m_time.Tick();
+		m_input.Update();
+		m_particle_system.Update(m_time.GetDeltaTime());
 	}
 }

@@ -9,9 +9,14 @@
 #include "Scene.h"
 
 #include "Renderer.h"
+#include "Text.h"
 #include "Input.h"
 #include "GameTime.h"
+#include "Timer.h"
 #include "MathUtil.h"
+#include "ParticleSystem.h"
+
+#include "Game.h"
 
 #include "fmod.hpp"
 
@@ -34,6 +39,7 @@ namespace nu
 		Input& GetInput() { return m_input; }
 		Renderer& GetRenderer() { return m_renderer; }
 		GameTime& GetTime() { return m_time; }
+		ParticleSystem& GetPD() { return m_particle_system; }
 
 	private:
 		Engine() = default;
@@ -42,6 +48,7 @@ namespace nu
 		Renderer m_renderer;
 		
 		GameTime m_time;
+		ParticleSystem m_particle_system;
 	};
 
 }

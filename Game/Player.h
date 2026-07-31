@@ -21,9 +21,11 @@ public:
 
 	void Update(float dt) override;
 
-	void Draw(const class nu::Renderer& r) const override;
+	void OnCollision(Actor* other) override;
+
 private:
 	int m_ammo = 0;
 	float m_speed = 175.0f;
-	float m_brake_multiplier = 0.97f;
+	float m_brake_speed = 4.0f;
+	bool m_mouse_drag = false;
 };
