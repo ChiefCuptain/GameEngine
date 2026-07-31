@@ -40,7 +40,7 @@ namespace nu
 		Input& GetInput() { return m_input; }
 		Renderer& GetRenderer() { return m_renderer; }
 		GameTime& GetTime() { return m_time; }
-		ParticleSystem& GetPD() { return m_particle_system; }
+		ParticleSystem& GetPS() { return m_particle_system; }
 		Audio& GetAudio() { return m_audio; }
 
 	private:

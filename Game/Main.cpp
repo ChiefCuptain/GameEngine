@@ -11,31 +11,6 @@ int main()
     game.Initialize();
 
 
-    // create audio system
-    FMOD::System* audio;
-    FMOD::System_Create(&audio);
-
-    void* extradriverdata = nullptr;
-    audio->init(32, FMOD_INIT_NORMAL, extradriverdata);
-
-    std::vector<FMOD::Sound*> sounds;
-
-    FMOD::Sound* sound = nullptr;
-
-    audio->createSound("Assets/Audio/snd_jump.wav", FMOD_DEFAULT, 0, &sound);
-    sounds.push_back(sound);
-
-    audio->createSound("Assets/Audio/snd_timer_tick.wav", FMOD_DEFAULT, 0, &sound);
-    sounds.push_back(sound);
-
-    audio->createSound("Assets/Audio/snd_timer_pickup.wav", FMOD_DEFAULT, 0, &sound);
-    sounds.push_back(sound);
-
-    audio->createSound("Assets/Audio/snd_portal_enter.wav", FMOD_DEFAULT, 0, &sound);
-    sounds.push_back(sound);
-
-    audio->createSound("Assets/Audio/snd_evil_heliblo.wav", FMOD_DEFAULT, 0, &sound);
-    sounds.push_back(sound);
     
     // MAIN LOOP
     bool quit = false;
@@ -56,7 +31,6 @@ int main()
 
         // Engine
         nu::Engine::Get().Update();
-        audio->update();
 
         float dt = nu::Engine::Get().GetTime().GetDeltaTime();
 
@@ -70,6 +44,8 @@ int main()
         nu::Engine::Get().GetRenderer().Clear(); // Clear the renderer
 
         game.Draw(nu::Engine::Get().GetRenderer());
+
+        nu::Engine::Get().GetPS().Draw(nu::Engine::Get().GetRenderer());
 
         nu::Engine::Get().GetRenderer().RenderPresent();// Render the screen
     }
