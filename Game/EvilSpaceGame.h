@@ -47,7 +47,9 @@ private:
 	nu::Text* m_title_text_2 = nullptr;
 	nu::Text* m_level_text = nullptr;
 	nu::Text* m_lives_text = nullptr;
-	nu::Text* m_game_over_text = nullptr;
+	nu::Text* m_game_over_text_1 = nullptr;
+	nu::Text* m_game_over_text_2 = nullptr;
+
 
 	std::string m_level_string = "";
 	std::string m_lives_string = "";

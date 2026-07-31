@@ -47,6 +47,9 @@ void Enemy::Update(float dt)
 
             Bullet* bullet = new Bullet{ bulletDesc };
             m_scene->AddActor(bullet);
+
+            nu::Engine::Get().GetAudio().PlaySound("enemy_shoot");
+
         }
 
     }
@@ -79,6 +82,7 @@ void Enemy::OnCollision(Actor* other)
 {
     if (other->GetTag() == "Player_Bullet")
     {
+        nu::Engine::Get().GetAudio().PlaySound("explosion");
         SetDestroyed();
         other->SetDestroyed();
     }

@@ -23,6 +23,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "Audio.h"
 
 namespace nu
 {
@@ -40,12 +41,14 @@ namespace nu
 		Renderer& GetRenderer() { return m_renderer; }
 		GameTime& GetTime() { return m_time; }
 		ParticleSystem& GetPD() { return m_particle_system; }
+		Audio& GetAudio() { return m_audio; }
 
 	private:
 		Engine() = default;
 	private:
 		Input m_input;
 		Renderer m_renderer;
+		Audio m_audio;
 		
 		GameTime m_time;
 		ParticleSystem m_particle_system;

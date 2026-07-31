@@ -67,6 +67,8 @@ void Player::Update(float dt)
 
             Bullet* bullet = new Bullet{ bulletDesc };
             m_scene->AddActor(bullet);
+
+            nu::Engine::Get().GetAudio().PlaySound("player_shoot");
         }
 
         //SetVelocity(GetVelocity() + force * dt);
@@ -80,6 +82,7 @@ void Player::OnCollision(Actor* other)
 {
     if (other->GetTag() == "Enemy_Bullet")
     {
+        nu::Engine::Get().GetAudio().PlaySound("explosion");
         SetDestroyed();
         other->SetDestroyed();
     }

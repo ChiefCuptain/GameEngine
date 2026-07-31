@@ -63,28 +63,6 @@ int main()
         // Game
         game.Update(dt);
 
-        //if (nu::Engine::Get().GetInput().GetKeyPressed(SDL_SCANCODE_1))
-        //{
-        //    audio->playSound(sounds.at(0), nullptr, false, nullptr);
-        //}
-        //if (nu::Engine::Get().GetInput().GetKeyPressed(SDL_SCANCODE_2))
-        //{
-        //    audio->playSound(sounds.at(1), nullptr, false, nullptr);
-        //}
-        //if (nu::Engine::Get().GetInput().GetKeyPressed(SDL_SCANCODE_3))
-        //{
-        //    audio->playSound(sounds.at(2), nullptr, false, nullptr);
-        //}
-        //if (nu::Engine::Get().GetInput().GetKeyPressed(SDL_SCANCODE_4))
-        //{
-        //    audio->playSound(sounds.at(3), nullptr, false, nullptr);
-        //}
-        //if (nu::Engine::Get().GetInput().GetKeyPressed(SDL_SCANCODE_5))
-        //{
-        //    audio->playSound(sounds.at(4), nullptr, false, nullptr);
-        //}
-
-
 
 
         // RENDER

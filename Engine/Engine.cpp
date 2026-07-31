@@ -14,12 +14,14 @@ namespace nu
 		m_renderer.Initialize("Game Engine", 1920, 1080);
 		m_particle_system.Initialize();
 		m_input.Initialize();
+		m_audio.Initialize();
 
 		return true;
 	}
 
 	void Engine::Quit()
 	{
+		m_audio.Quit();
 		m_input.Quit();
 		m_particle_system.Quit();
 		m_renderer.Quit();
@@ -28,6 +30,7 @@ namespace nu
 	void Engine::Update()
 	{
 		m_time.Tick();
+		m_audio.Update();
 		m_input.Update();
 		m_particle_system.Update(m_time.GetDeltaTime());
 	}

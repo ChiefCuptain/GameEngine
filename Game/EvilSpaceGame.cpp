@@ -20,19 +20,24 @@ bool EvilSpaceGame::Initialize()
 	m_title_text_1 = new nu::Text(m_font);
 	m_title_text_1->Create(nu::Engine::Get().GetRenderer(),"EVIL", {1.0f, 0.0f, 0.0f});
 
-	m_game_over_text = new nu::Text(m_font);
-	m_game_over_text->Create(nu::Engine::Get().GetRenderer(), "you died bozo", { 0.3f, 0.0f, 0.0f });
+	m_game_over_text_1 = new nu::Text(m_font);
+	m_game_over_text_1->Create(nu::Engine::Get().GetRenderer(), "you died bozo", { 0.3f, 0.0f, 0.0f });
 
 
 	m_font->ChangeFontSize("Assets/Fonts/Kubasta.ttf", 60.0f);
+	
 	m_title_text_2 = new nu::Text(m_font);
 	m_title_text_2->Create(nu::Engine::Get().GetRenderer(), "space game", { 1.0f, 1.0f, 1.0f });
+	m_game_over_text_2 = new nu::Text(m_font);
 
 	m_font->ChangeFontSize("Assets/Fonts/Kubasta.ttf", 36.0f);
 	m_level_text = new nu::Text(m_font);
 	
 	m_lives_text = new nu::Text(m_font);
 
+	nu::Engine::Get().GetAudio().AddSound("player_shoot", "Assets/Audio/snd_player_shoot.wav");
+	nu::Engine::Get().GetAudio().AddSound("enemy_shoot", "Assets/Audio/snd_enemy_shoot.wav");
+	nu::Engine::Get().GetAudio().AddSound("explosion", "Assets/Audio/snd_explosion.wav");
 
 	return true;
 }
@@ -74,7 +79,7 @@ void EvilSpaceGame::Update(float dt)
 			SpawnPlayer();
 		}
 		m_scene->Update(dt);
-		for (int i = 0; i < pow(2, m_level); i++)
+		for (int i = 0; i < round(pow(2, 1 + (0.5 * (m_level - 1)))); i++)
 		{
 			SpawnEnemy();
 		}
@@ -102,6 +107,16 @@ void EvilSpaceGame::Update(float dt)
 		else
 		{
 			m_level += 1;
+			if (m_level % 5 == 0)
+			{
+				m_lives += 1;
+			}
+			m_lives_string = std::to_string(m_lives);
+			m_lives_string.append(" Lives");
+
+			m_font->ChangeFontSize("Assets/Fonts/Kubasta.ttf", 36.0f);
+			m_lives_text = new nu::Text(m_font);
+			m_lives_text->Create(nu::Engine::Get().GetRenderer(), m_lives_string, { 1.0f, 1.0f, 1.0f });
 			m_gamestate = GameState::StartLevel;
 		}
 		break;
@@ -124,6 +139,10 @@ void EvilSpaceGame::Update(float dt)
 			if (m_lives <= 0) 
 			{
 				m_level_timer = { 4.0f };
+				m_font->ChangeFontSize("Assets/Fonts/Kubasta.ttf", 60.0f);
+				std::string final_level = "(Level ";
+				final_level.append(std::to_string(m_level)).append(")");
+				m_game_over_text_2->Create(nu::Engine::Get().GetRenderer(), final_level, { 0.7f, 0.7f, 0.7f });
 				m_gamestate = GameState::GameOver;
 			}
 			else
@@ -203,10 +222,14 @@ void EvilSpaceGame::Draw(const nu::Renderer& renderer)
 		m_scene->Draw(renderer);
 		break;
 	case EvilSpaceGame::GameState::GameOver:
-		m_game_over_text->Draw(
+		m_game_over_text_1->Draw(
 			nu::Engine::Get().GetRenderer(),
 			nu::Engine::Get().GetRenderer().GetWindowWidth() / 2.0f,
 			nu::Engine::Get().GetRenderer().GetWindowHeight() / 2.0f);
+		m_game_over_text_2->Draw(
+			nu::Engine::Get().GetRenderer(),
+			nu::Engine::Get().GetRenderer().GetWindowWidth() / 2.0f,
+			nu::Engine::Get().GetRenderer().GetWindowHeight() / 2.0f + 100.0f);
 		break;
 	default:
 		break;
